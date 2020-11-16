@@ -3,12 +3,29 @@ import Context from './context';
 import TodoList from './Todo/TodoList';
 import Loader from './Loader';
 import Modal from './Modal/Modal';
+import { InputField } from './Form/InputField';
+import { Foo } from './examples/Foo';
+import { InputInterface } from './Form/interfaces';
 
 const AddTodo = React.lazy(() => import('./Todo/AddTodo'));
 
 function App() {
-    const [ todos, setTodos ] = React.useState([]);
+    const [ todos, setTodos ]: any= React.useState([]);
     const [ loading, setLoading ] = React.useState(true);
+    const InputProps: InputInterface = {
+        errors: 'Error message',
+        label: {
+            text: 'Label',
+            positions: {
+                top: '0',
+                left: '0',
+            }
+        },
+        inputValue: 'Input value',
+        fieldProps: {
+            type: 'text',
+        },
+    };
 
     useEffect(() => {
         fetch('https://jsonplaceholder.typicode.com/todos/?_limit=5')
@@ -17,12 +34,12 @@ function App() {
                 setTimeout(() => {
                     setTodos(todos);
                     setLoading(false);
-                }, 5000)
+                }, 1000)
             })
     }, []);
 
-    function toggleTodo(id) {
-        setTodos(todos.map(todo => {
+    function toggleTodo(id: string) {
+        setTodos(todos.map((todo: any) => {
             if (todo.id === id) {
                 todo.completed = !todo.completed;
             }
@@ -30,11 +47,11 @@ function App() {
         }));
     }
 
-    function removeTodo(id) {
-        setTodos(todos.filter(todo => todo.id !== id));
+    function removeTodo(id: string) {
+        setTodos(todos.filter((todo: any) => todo.id !== id));
     }
 
-    function addTodo(title) {
+    function addTodo(title: string) {
         setTodos(todos.concat([{
             title,
              id: Date.now(),
@@ -63,6 +80,8 @@ function App() {
                         <p>No todos</p>
                 }
 
+                <InputField {...{...InputProps}} />
+                <Foo>{() => <h1>{'foo value'}</h1>}</Foo>
             </div>
         </Context.Provider>
     );
