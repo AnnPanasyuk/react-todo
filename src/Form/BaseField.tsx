@@ -4,12 +4,13 @@ import { BaseFieldPropsInterface } from './interfaces';
 export const BaseField: React.FC<BaseFieldPropsInterface> = (props: BaseFieldPropsInterface) => {
     const { errors, label, warnings, tooltip, copyTrigger, infoIcon, externalInfo } = props;
 
-    const fieldErrorsWarnings = (errors: string | string[] | Error | Error[]): string => {
-        let errorMessage: string = typeof errors == 'string' ? errors : '';
-        let middleVar: string | string[] | Error | Error[] = errors;
+    const getErrorWarningString = (value: string | string[] | Error | Error[]): string => {
+        let errorMessage: string = typeof value == 'string' ? value : '';
+        let middleVar: string | string[] | Error | Error[] = value;
 
         if (Array.isArray(middleVar)) {
             middleVar = middleVar[0];
+            errorMessage = middleVar.toString();
         }
         if (middleVar instanceof Error) {
             errorMessage = middleVar.message;
@@ -20,17 +21,19 @@ export const BaseField: React.FC<BaseFieldPropsInterface> = (props: BaseFieldPro
 
     return (
         <div style={{position: 'relative', padding: '30px 0 0 0'}}>
-            <label style={{position: 'absolute', ...label?.positions}}>
-                { label?.text }
-            </label>
+            { label &&
+                <label style={{position: 'absolute', ...label?.positions}}>
+                    { label?.text }
+                </label>
+            }
             { props.children() }
 
             {
-                errors && <p>{ fieldErrorsWarnings(errors) }</p>
+                errors && <p>{ getErrorWarningString(errors) }</p>
             }
 
             {
-                warnings && <p>{ fieldErrorsWarnings(warnings) }</p>
+                warnings && <p>{ getErrorWarningString(warnings) }</p>
             }
 
             {
